@@ -234,7 +234,7 @@ ps_reinit(ps_decoder_t *ps, cmd_ln_t *config)
     	    return -1;
         }
     }
-    
+
     ps->mfclogdir = cmd_ln_str_r(ps->config, "-mfclogdir");
     ps->rawlogdir = cmd_ln_str_r(ps->config, "-rawlogdir");
     ps->senlogdir = cmd_ln_str_r(ps->config, "-senlogdir");
@@ -324,7 +324,7 @@ ps_reinit(ps_decoder_t *ps, cmd_ln_t *config)
         fsg_model_free(fsg);
         ps_set_search(ps, PS_DEFAULT_SEARCH);
     }
-    
+
     /* Or load a JSGF grammar */
     if ((path = cmd_ln_str_r(ps->config, "-jsgf"))) {
         if (ps_set_jsgf_file(ps, PS_DEFAULT_SEARCH, path)
@@ -338,7 +338,7 @@ ps_reinit(ps_decoder_t *ps, cmd_ln_t *config)
                 return -1;
     }
 
-    if ((path = cmd_ln_str_r(ps->config, "-lm")) && 
+    if ((path = cmd_ln_str_r(ps->config, "-lm")) &&
         !cmd_ln_boolean_r(ps->config, "-allphone")) {
         if (ps_set_lm_file(ps, PS_DEFAULT_SEARCH, path)
             || ps_set_search(ps, PS_DEFAULT_SEARCH))
@@ -356,8 +356,8 @@ ps_reinit(ps_decoder_t *ps, cmd_ln_t *config)
         }
 
         for(lmset_it = ngram_model_set_iter(lmset);
-            lmset_it; lmset_it = ngram_model_set_iter_next(lmset_it)) {    
-            ngram_model_t *lm = ngram_model_set_iter_model(lmset_it, &name);            
+            lmset_it; lmset_it = ngram_model_set_iter_next(lmset_it)) {
+            ngram_model_t *lm = ngram_model_set_iter_model(lmset_it, &name);
             E_INFO("adding search %s\n", name);
             if (ps_set_lm(ps, name, lm)) {
                 ngram_model_set_iter_free(lmset_it);
@@ -387,7 +387,7 @@ ps_decoder_t *
 ps_init(cmd_ln_t *config)
 {
     ps_decoder_t *ps;
-    
+
     if (!config) {
 	E_ERROR("No configuration specified");
 	return NULL;
@@ -502,7 +502,7 @@ ps_get_search(ps_decoder_t *ps)
     return name;
 }
 
-int 
+int
 ps_unset_search(ps_decoder_t *ps, const char *name)
 {
     ps_search_t *search = hash_table_delete(ps->searches, name);
@@ -526,13 +526,13 @@ ps_search_iter_next(ps_search_iter_t *itor)
    return (ps_search_iter_t *)hash_table_iter_next((hash_iter_t *)itor);
 }
 
-const char* 
+const char*
 ps_search_iter_val(ps_search_iter_t *itor)
 {
    return (const char*)(((hash_iter_t *)itor)->ent->key);
 }
 
-void 
+void
 ps_search_iter_free(ps_search_iter_t *itor)
 {
     hash_table_iter_free((hash_iter_t *)itor);
@@ -569,7 +569,7 @@ static int
 set_search_internal(ps_decoder_t *ps, ps_search_t *search)
 {
     ps_search_t *old_search;
-    
+
     if (!search)
 	return -1;
 
@@ -651,7 +651,7 @@ ps_set_fsg(ps_decoder_t *ps, const char *name, fsg_model_t *fsg)
     return set_search_internal(ps, search);
 }
 
-int 
+int
 ps_set_jsgf_file(ps_decoder_t *ps, const char *name, const char *path)
 {
   fsg_model_t *fsg;
@@ -690,7 +690,7 @@ ps_set_jsgf_file(ps_decoder_t *ps, const char *name, const char *path)
   return result;
 }
 
-int 
+int
 ps_set_jsgf_string(ps_decoder_t *ps, const char *name, const char *jsgf_string)
 {
   fsg_model_t *fsg;
@@ -865,7 +865,7 @@ ps_lookup_word(ps_decoder_t *ps, const char *word)
     int32 phlen, j;
     char *phones;
     dict_t *dict = ps->dict;
-    
+
     wid = dict_wordid(dict, word);
     if (wid == BAD_S3WID)
 	return NULL;
@@ -934,12 +934,21 @@ ps_start_stream(ps_decoder_t *ps)
 int
 ps_start_utt(ps_decoder_t *ps)
 {
+  char uttid[16];
+  sprintf(uttid, "%09u", ps->uttno);
+  ++ps->uttno;
+
+  return ps_start_utterance(ps, uttid);
+}
+
+int
+ps_start_utterance(ps_decoder_t *ps, const char *uttid)
+{
     int rv;
-    char uttid[16];
-    
+
     if (ps->acmod->state == ACMOD_STARTED || ps->acmod->state == ACMOD_PROCESSING) {
-	E_ERROR("Utterance already started\n");
-	return -1;
+	   E_ERROR("Utterance already started\n");
+	    return -1;
     }
 
     if (ps->search == NULL) {
@@ -950,9 +959,6 @@ ps_start_utt(ps_decoder_t *ps)
 
     ptmr_reset(&ps->perf);
     ptmr_start(&ps->perf);
-
-    sprintf(uttid, "%09u", ps->uttno);
-    ++ps->uttno;
 
     /* Remove any residual word lattice and hypothesis. */
     ps_lattice_free(ps->search->dag);
@@ -1165,7 +1171,7 @@ ps_end_utt(ps_decoder_t *ps)
         int32 score;
 
         hyp = ps_get_hyp(ps, &score);
-        
+
         if (hyp != NULL) {
     	    E_INFO("%s (%d)\n", hyp, score);
     	    E_INFO_NOFN("%-20s %-5s %-5s %-5s %-10s %-10s %-3s\n",
@@ -1363,7 +1369,7 @@ ps_get_all_time(ps_decoder_t *ps, double *out_nspeech,
     *out_nwall = ps->perf.t_tot_elapsed;
 }
 
-uint8 
+uint8
 ps_get_in_speech(ps_decoder_t *ps)
 {
     return fe_get_vad_state(ps->acmod->fe);
@@ -1439,7 +1445,7 @@ ps_search_base_reinit(ps_search_t *search, dict_t *dict,
 }
 
 void
-ps_set_rawdata_size(ps_decoder_t *ps, int32 size) 
+ps_set_rawdata_size(ps_decoder_t *ps, int32 size)
 {
     acmod_set_rawdata_size(ps->acmod, size);
 }

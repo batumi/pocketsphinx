@@ -73,7 +73,7 @@
     void add_word(char const *word, char const *phones, int update, int *errcode) {
         *errcode = ps_add_word($self, word, phones, update);
     }
-    
+
     %newobject lookup_word;
     char * lookup_word(const char *word) {
         return ps_lookup_word($self, word);
@@ -106,6 +106,10 @@
         *errcode = ps_start_utt($self);
     }
 
+    void start_utterance(int *errcode, char const * utteranceId) {
+        *errcode = ps_start_utterance($self, utteranceId);
+    }
+
     void end_utt(int *errcode) {
         *errcode = ps_end_utt($self);
     }
@@ -118,7 +122,7 @@
         NSAMP /= sizeof(int16);
         return *errcode = ps_process_raw($self, (int16 *)SDATA, NSAMP, no_search, full_utt);
     }
-    
+
     int process_cep(const char *SDATA, size_t NSAMP, bool no_search, bool full_utt,
                 int *errcode) {
         mfcc_t **feats;
@@ -185,7 +189,7 @@
     Feature * get_feat() {
         return ps_get_feat($self);
     }
-   
+
     bool get_in_speech() {
         return ps_get_in_speech($self);
     }
@@ -217,7 +221,7 @@
     void set_keyphrase(const char *name, const char *keyphrase, int *errcode) {
         *errcode = ps_set_keyphrase($self, name, keyphrase);
     }
-    
+
     void set_allphone_file(const char *name, const char *lmfile, int *errcode) {
 	*errcode = ps_set_allphone_file($self, name, lmfile);
     }
@@ -259,7 +263,7 @@
     SegmentList *seg() {
 	return $self;
     }
-    
+
     NBestList *nbest() {
 	return $self;
     }

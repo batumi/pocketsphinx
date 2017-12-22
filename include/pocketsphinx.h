@@ -8,7 +8,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -16,16 +16,16 @@
  *    distribution.
  *
  *
- * THIS SOFTWARE IS PROVIDED BY CARNEGIE MELLON UNIVERSITY ``AS IS'' AND 
- * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THIS SOFTWARE IS PROVIDED BY CARNEGIE MELLON UNIVERSITY ``AS IS'' AND
+ * ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
  * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
  * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY
  * NOR ITS EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT 
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, 
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY 
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * ====================================================================
@@ -266,7 +266,7 @@ int ps_add_word(ps_decoder_t *ps,
                 char const *phones,
                 int update);
 
-/** 
+/**
  * Lookup for the word in the dictionary and return phone transcription
  * for it.
  *
@@ -278,7 +278,7 @@ int ps_add_word(ps_decoder_t *ps,
  *         allocated and must be freed by the user.
  */
 POCKETSPHINX_EXPORT
-char *ps_lookup_word(ps_decoder_t *ps, 
+char *ps_lookup_word(ps_decoder_t *ps,
 	             const char *word);
 
 /**
@@ -332,6 +332,19 @@ int ps_start_stream(ps_decoder_t *ps);
 POCKETSPHINX_EXPORT
 int ps_start_utt(ps_decoder_t *ps);
 
+/**
+ * Start utterance processing.
+ *
+ * This function should be called before any utterance data is passed
+ * to the decoder.  It marks the start of a new utterance and
+ * reinitializes internal data structures.
+ *
+ * @param ps Decoder to be started.
+ * @param uttid Utterance id.
+ * @return 0 for success, <0 on error.
+ */
+POCKETSPHINX_EXPORT
+int ps_start_utterance(ps_decoder_t *ps, const char *uttid);
 /**
  * Decode raw audio data.
  *
@@ -533,7 +546,7 @@ ps_nbest_t *ps_nbest(ps_decoder_t *ps);
  * @return Updated N-best iterator, or NULL if no more hypotheses are
  *         available (iterator is freed ni this case).
  */
-POCKETSPHINX_EXPORT 
+POCKETSPHINX_EXPORT
 ps_nbest_t *ps_nbest_next(ps_nbest_t *nbest);
 
 /**
@@ -611,7 +624,7 @@ void ps_set_rawdata_size(ps_decoder_t *ps, int32 size);
 
 /**
  * Retrieves the raw data collected during utterance decoding.
- * 
+ *
  * @param ps Decoder
  * @param buffer preallocated buffer to store the data, must be within the limit
  * set before
